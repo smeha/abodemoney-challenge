@@ -19,7 +19,7 @@ ACCEPT as the same person:
 - Punctuation differences: hyphen removal (Jean-Luc → Jean Luc), apostrophe removal (O'Connor → Oconnor)
 - Mc/Mac prefix equivalence: McDonald = Macdonald
 - Arabic compound name spacing: Abdul Rahman = Abdulrahman, Al Fayed = Alfayed, Al Khattab = Alkhattab, Al Qasim = Alkasim
-- Minor typos and character transpositions that preserve phonetic identity (Tlyer = Tyler, Bilha = Bliha)
+- Minor typos and character transpositions that preserve phonetic identity (Tlyer = Tyler, Bilha = Bliha, Jonson = Johnson)
 - Case-insensitive matching: alhilal = Al-Hilal
 - Phonetic suffix variants at word boundaries: Darguloff = Dargulov
 
@@ -42,7 +42,7 @@ export async function verifyName(
   candidateName: string
 ): Promise<VerificationResult> {
   const response = await client.messages.create({
-    model: 'claude-opus-4-6',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 150,
     temperature: 0,
     system: SYSTEM_PROMPT,
@@ -57,7 +57,13 @@ export async function verifyName(
   const block = response.content[0];
   if (block.type !== 'text') throw new Error('Unexpected response type from verifier');
 
-  const parsed = JSON.parse(block.text);
+  let parsed: Record<string, unknown>;
+  try {
+    const raw = block.text.replace(/^```json\s*/i, '').replace(/```\s*$/,'').trim();
+    parsed = JSON.parse(raw);
+  } catch {
+    throw new Error(`Verifier returned invalid JSON: ${block.text}`);
+  }
   return {
     match: Boolean(parsed.match),
     confidence: Number(parsed.confidence),

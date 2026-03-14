@@ -1,5 +1,4 @@
-# Abodemoney Challenge
-Abodemoney Challenge
+# Name Verification Application
 
 A small application with two independent capabilities:
 - Target name generation from a user-provided prompt
@@ -10,10 +9,23 @@ A small application with two independent capabilities:
 - Node Package Manager (npm v11.8)
 - Vite (v8.0)
 - React (v19.2)
+- Anthropic Claude (via `@anthropic-ai/sdk`) for name generation and verification
 
 ## How to run locally
+### Install dependencies
 ```bash
 npm install
+```
+
+### Create environment file
+```bash
+cp .env.example .env
+```
+- Now edit `.env` file and add your Anthropic API key
+- NOTE: To find your key: Go to [https://console.anthropic.com/](https://console.anthropic.com/) → API Keys → create or copy an existing one.
+
+### Run the project
+```bash
 npm run dev
 ```
 
