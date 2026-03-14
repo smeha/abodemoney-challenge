@@ -7,7 +7,7 @@ const client = new Anthropic({
 
 export async function generateName(prompt: string): Promise<string> {
   const response = await client.messages.create({
-    model: 'claude-sonnet-4-6',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 100,
     system:
       'You are a name generator. Given a user prompt, generate exactly one name string that satisfies the requirements. Return ONLY the name itself — no explanations, no quotes, no punctuation other than what is part of the name.',

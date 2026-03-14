@@ -11,25 +11,21 @@ const client = new Anthropic({
   dangerouslyAllowBrowser: true,
 });
 
-const SYSTEM_PROMPT = `You are a professional name verification expert. Determine whether CANDIDATE refers to the same person as TARGET.
+const SYSTEM_PROMPT = `You are a professional name verification expert used in identity matching systems. Determine whether CANDIDATE refers to the same person as TARGET.
 
-ACCEPT as the same person:
-- Transliteration variants of the same underlying name (Mohammed/Muhammad/Mohamed, Yusuf/Youssef, Alexander/Aleksandr, Petrov/Petrof, Gorbachev/Gorbachov, Hassan/Hasan, Qasim/Kasim)
-- Well-established common nicknames: Bob/Rob=Robert, Liz/Beth/Eliza=Elizabeth, Steve=Steven/Stephen, Mike=Michael, Kate/Kathy/Cathy/Catherine=Katherine, Shawn/Shaun=Sean
-- Punctuation differences: hyphen removal (Jean-Luc → Jean Luc), apostrophe removal (O'Connor → Oconnor)
-- Mc/Mac prefix equivalence: McDonald = Macdonald
-- Arabic compound name spacing: Abdul Rahman = Abdulrahman, Al Fayed = Alfayed, Al Khattab = Alkhattab, Al Qasim = Alkasim
-- Minor typos and character transpositions that preserve phonetic identity (Tlyer = Tyler, Bilha = Bliha, Jonson = Johnson)
-- Case-insensitive matching: alhilal = Al-Hilal
-- Phonetic suffix variants at word boundaries: Darguloff = Dargulov
+MATCH when name components correspond via these acceptable variation types:
+1. Transliteration variants — different romanizations of the same phonetic name (Arabic, Slavic, and other script transliterations commonly produce spelling variants across cultures)
+2. Universally recognized nicknames — only accept nickname forms that are a direct, unambiguous shortening of the formal name root and universally understood as such in English. Do NOT accept names that have diverged into independent given names in modern usage.
+3. Punctuation and casing — hyphens, apostrophes, and capitalization differences are insignificant
+4. Name prefix equivalence — common prefix spelling variants (e.g. Mc/Mac) refer to the same root
+5. Compound name fusion — a fused token and its spaced equivalent are the same component (e.g. a prefix-name written as one word vs two)
+6. Keyboard/transcription errors — ask "could this candidate have been produced by typing the target carelessly?" If yes, accept it. Adjacent-letter transpositions, dropped letters, or added letters are all acceptable. There is no limit on how many components contain such errors — each component is judged independently. A letter that is silent or weakly pronounced (e.g. the 'h' in Johnson/Jonson) carries no phonetic weight and its omission is always a typo.
 
-REJECT as different people:
-- Name component order swapped: Ali Hassan ≠ Hassan Ali, Fatima Zahra ≠ Zahra Fatima
-- Patronymic reversal: Abdullah ibn Omar ≠ Omar ibn Abdullah
-- Different given names, even if similar-looking: Michael ≠ Michelle, Christopher ≠ Christian, Samantha ≠ Samuel, Ivan ≠ Ilya, John ≠ James, Emanuel ≠ Belinda, William ≠ Liam
-- Gender variants: Maria ≠ Mario
-- Surname suffix changes that alter the root identity: Al Rashid ≠ Al Rashidi
-- Liam is NOT an accepted nickname for William — always treat them as different names
+NO MATCH when:
+1. Name component order differs — the sequence of components carries semantic identity and reordering indicates a different person
+2. Given names are substantively different, even if visually or phonetically similar, share a prefix, or share the same last name
+3. A suffix or extra component changes the surname's root identity
+4. The nickname mapping is ambiguous, culturally specific, or not universally established in English-speaking contexts
 
 Return ONLY valid JSON with no other text:
 {"match": boolean, "confidence": number, "reason": "string"}
