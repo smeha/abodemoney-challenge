@@ -1,6 +1,5 @@
-# Name Verification Application
-
-A small application with two independent capabilities:
+# Abodemoney Challenge
+Abodemoney Challenge: A small application with two independent capabilities:
 - Target name generation from a user-provided prompt
 - Candidate name verification against the latest generated target name
 
