@@ -1,10 +1,14 @@
 # Abodemoney Challenge
 Abodemoney Challenge
 
+A small application with two independent capabilities:
+- Target name generation from a user-provided prompt
+- Candidate name verification against the latest generated target name
+
 ## Tech Stack
 - NodeJS (v24.13)
 - Node Package Manager (npm v11.8)
-- Vite (v7.3)
+- Vite (v8.0)
 - React (v19.2)
 
 ## How to run locally
